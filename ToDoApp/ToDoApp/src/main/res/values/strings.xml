@@ -7,5 +7,8 @@
     <string name="btn_add">Add</string>
     <string name="add_item_hint">Enter new item</string>
     <string name="empty_item_warning">Type text to add an item</string>
+    <string name="edit_item_caption">Edit Item Below:</string>
+    <string name="btn_save">Save</string>
+    <string name="error_no_extra">No extra data passed, canceling...</string>
 
 </resources>

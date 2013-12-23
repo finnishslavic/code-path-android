@@ -21,6 +21,8 @@
                 <category a:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity a:name=".EditItemActivity" />
     </application>
 
 </manifest>

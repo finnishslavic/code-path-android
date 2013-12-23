@@ -20,6 +20,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * FileUtils
+ * Helper class for easy read/write file procedures.
+ */
 public class FileUtils
 {
     public static void writeLines(File destination, List<String> source) throws IOException {

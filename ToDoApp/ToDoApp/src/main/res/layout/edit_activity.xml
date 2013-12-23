@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:orientation="vertical"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent">
+    <TextView a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_margin="10dp"
+        a:textSize="26sp"
+        a:text="@string/edit_item_caption" />
+    <EditText a:id="@+id/item_input"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_margin="10dp" />
+    <Button a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_marginTop="10dp"
+        a:layout_marginLeft="15dp"
+        a:onClick="onSaveClicked"
+        a:textSize="24sp"
+        a:text="@string/btn_save" />
+</LinearLayout>
