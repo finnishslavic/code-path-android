@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TipCalculator</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="tip_input">Input you bill total: $0.0</string>
+    <string name="small_tip_percent_text">10%</string>
+    <string name="medium_tip_percent_text">15%</string>
+    <string name="high_tip_percent_text">20%</string>
+    <string name="tip_amount_format">Tip is: $%1$s</string>
+    <string name="tip_amount_place_holder">Tip is: $7.50</string>
+    <string name="error_non_positive">Please, enter a positive value</string>
+    <string name="error_no_tip">Please input tip to calculate</string>
+
+</resources>
