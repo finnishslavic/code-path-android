@@ -1,10 +1,16 @@
 package com.panasenko.tipcalculator.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +23,18 @@ import java.text.NumberFormat;
  */
 public class TipCalculatorActivity extends Activity {
 
+    private static final String TAG = TipCalculatorActivity.class.getSimpleName();
+
     private static final double SMALL_TIP_MULTIPLIER = 0.10;
     private static final double MEDIUM_TIP_MULTIPLIER = 0.15;
     private static final double HIGH_TIP_MULTIPLIER = 0.20;
 
+    private static final String EXTRA_SELECTED_TIP_ID = "com.panasenko.tipcalulator.android.EXTRA_SELECTED_TIP_ID";
+    private static final String EXTRA_BILL_TOTAL = "com.panasenko.tipcalulator.android.EXTRA_BILL_TOTAL";
+
     private EditText mTipInput;
     private TextView mTipAmountTextView;
+    private RadioGroup mTipRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,32 +44,48 @@ public class TipCalculatorActivity extends Activity {
         initViews();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(EXTRA_SELECTED_TIP_ID, mTipRadioGroup.getCheckedRadioButtonId());
+        outState.putString(EXTRA_BILL_TOTAL, mTipInput.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        int selectedTipButtonId = savedInstanceState.getInt(EXTRA_SELECTED_TIP_ID);
+        mTipRadioGroup.check(selectedTipButtonId);
+
+        String billTotalText = savedInstanceState.getString(EXTRA_BILL_TOTAL);
+        mTipInput.setText(billTotalText);
+    }
+
     /**
      * Called when one of tip selection buttons is clicked.
      * @param v Reference to a caller view, used to determine tip multiplier.
      */
     public void onTipSelected(View v)
     {
-        double tipAmount = getBillTotal();
-        if (tipAmount <= 0.0) {
-            Toast.makeText(this, R.string.error_non_positive, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         switch (v.getId())
         {
             case R.id.btn_small_tip:
-                updateTipAmount(tipAmount, SMALL_TIP_MULTIPLIER);
+                updateTipAmount(SMALL_TIP_MULTIPLIER);
                 break;
             case R.id.btn_medium_tip:
-                updateTipAmount(tipAmount, MEDIUM_TIP_MULTIPLIER);
+                updateTipAmount(MEDIUM_TIP_MULTIPLIER);
                 break;
             case R.id.btn_high_bill:
-                updateTipAmount(tipAmount, HIGH_TIP_MULTIPLIER);
+                updateTipAmount(HIGH_TIP_MULTIPLIER);
                 break;
             default:
                 return;
         }
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mTipInput.getWindowToken(), 0);
     }
 
     /**
@@ -66,6 +94,33 @@ public class TipCalculatorActivity extends Activity {
     private void initViews() {
         mTipInput = (EditText) findViewById(R.id.tip_input);
         mTipAmountTextView = (TextView) findViewById(R.id.txt_tip_amount);
+        mTipRadioGroup = (RadioGroup) findViewById(R.id.tip_selector);
+
+        mTipInput.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String text = editable.toString();
+                if (!TextUtils.isEmpty(text)) {
+                    updateWithSelectedTipButton(mTipRadioGroup.getCheckedRadioButtonId());
+                }
+            }
+        });
+
+        mTipRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int id) {
+                updateWithSelectedTipButton(id);
+            }
+        });
     }
 
     /**
@@ -86,10 +141,17 @@ public class TipCalculatorActivity extends Activity {
 
     /**
      * Calculates tip amount and updates result text view.
-     * @param tipAmount Amount to be used as base for calculating tip.
      * @param tipMultiplier Tip multiplier, decimal value (e.g. 0.15).
      */
-    private void updateTipAmount(double tipAmount, double tipMultiplier) {
+    private void updateTipAmount(double tipMultiplier) {
+        Log.d(TAG, "updateTipAmount called");
+
+        double tipAmount = getBillTotal();
+        if (tipAmount <= 0.0) {
+            Toast.makeText(this, R.string.error_non_positive, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (tipAmount > 0.0 && tipMultiplier > 0.0) {
             NumberFormat df = new DecimalFormat("0.00");
             df.setMinimumFractionDigits(2);
@@ -97,7 +159,28 @@ public class TipCalculatorActivity extends Activity {
 
             mTipAmountTextView.setText(getResources().getString(R.string.tip_amount_format,
                     df.format(tipAmount * tipMultiplier)));
+            Log.d(TAG, "updateTipAmount calculated: " + tipAmount * tipMultiplier);
         }
     }
 
+    /**
+     * Updates tip amount according to a selected tip button id.
+     * @param buttonId Id of the radio group button specifying selected tip percentage.
+     */
+    private void updateWithSelectedTipButton(int buttonId)
+    {
+        switch (buttonId) {
+            case R.id.btn_small_tip:
+                updateTipAmount(SMALL_TIP_MULTIPLIER);
+                break;
+            case R.id.btn_medium_tip:
+                updateTipAmount(MEDIUM_TIP_MULTIPLIER);
+                break;
+            case R.id.btn_high_bill:
+                updateTipAmount(HIGH_TIP_MULTIPLIER);
+                break;
+            default:
+                return;
+        }
+    }
 }
