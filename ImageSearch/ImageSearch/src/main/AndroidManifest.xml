@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:a="http://schemas.android.com/apk/res/android"
+    package="com.panasenko.imagesearch"
+    a:versionCode="1"
+    a:versionName="1.0" >
+
+    <uses-sdk
+        a:minSdkVersion="9"
+        a:targetSdkVersion="14" />
+
+    <application
+        a:allowBackup="true"
+        a:icon="@drawable/ic_launcher"
+        a:label="@string/app_name"
+        a:theme="@style/AppTheme" >
+        <activity
+            a:name="com.panasenko.imagesearch.SearchActivity"
+            a:label="@string/app_name" >
+            <intent-filter>
+                <action a:name="android.intent.action.MAIN" />
+                <category a:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity a:name=".SettingsActivity" a:label="@string/app_name" />
+    </application>
+
+</manifest>

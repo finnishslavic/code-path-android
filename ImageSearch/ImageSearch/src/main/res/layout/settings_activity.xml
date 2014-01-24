@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:orientation="vertical"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent">
+    <TextView a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_margin="8dp"
+        a:textSize="18dp"
+        a:textStyle="bold"
+        a:text="@string/search_options_title"/>
+    <TableLayout a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_margin="8dp"
+        a:stretchColumns="1">
+        <TableRow>
+            <TextView a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical"
+                a:text="@string/image_size" />
+            <Spinner a:id="@+id/image_size_spinner"
+                a:layout_width="match_parent"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical" />
+        </TableRow>
+        <TableRow>
+            <TextView a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical"
+                a:text="@string/color_filter" />
+            <Spinner a:id="@+id/image_color_spinner"
+                a:layout_width="match_parent"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical" />
+        </TableRow>
+        <TableRow>
+            <TextView a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical"
+                a:text="@string/image_type" />
+            <Spinner a:id="@+id/image_type_spinner"
+                a:layout_width="match_parent"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical" />
+        </TableRow>
+        <TableRow>
+            <TextView a:layout_width="wrap_content"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical"
+                a:text="@string/site_filter" />
+            <EditText a:id="@+id/site_filter_input"
+                a:layout_width="match_parent"
+                a:layout_height="wrap_content"
+                a:layout_gravity="center_vertical"
+                a:hint="@string/site_filter_hint" />
+        </TableRow>
+    </TableLayout>
+    <Button a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_gravity="center_horizontal"
+        a:onClick="onSaveClicked"
+        a:text="@string/save" />
+</LinearLayout>

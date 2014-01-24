@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:id="@+id/container"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent" >
+    <LinearLayout a:id="@+id/search_panel"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:padding="8dp"
+        a:orientation="horizontal">
+        <EditText a:id="@+id/search_input"
+            a:layout_width="0dp"
+            a:layout_height="wrap_content"
+            a:layout_weight="1"
+            a:layout_marginRight="8dp"
+            a:hint="@string/search_hint" />
+        <Button a:layout_width="wrap_content"
+            a:layout_height="wrap_content"
+            a:onClick="onSearchClicked"
+            a:text="@string/btn_search" />
+    </LinearLayout>
+    <GridView a:id="@+id/result_grid"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_below="@id/search_panel" />
+</RelativeLayout>
