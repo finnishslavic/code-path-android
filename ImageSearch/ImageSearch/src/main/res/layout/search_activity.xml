@@ -21,5 +21,6 @@
     <GridView a:id="@+id/result_grid"
         a:layout_width="match_parent"
         a:layout_height="wrap_content"
-        a:layout_below="@id/search_panel" />
+        a:layout_below="@id/search_panel"
+        a:numColumns="3"/>
 </RelativeLayout>
