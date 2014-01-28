@@ -3,22 +3,23 @@
  * Created: 1/24/14
  * Author: Viacheslav Panasenko
  */
-package com.panasenko.imagesearch;
+package com.panasenko.imagesearch.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import com.panasenko.imagesearch.R;
+import com.panasenko.imagesearch.model.SearchFilter;
 
 /**
  * SettingsActivity
  * Advanced search settings activity.
  */
-public class SettingsActivity extends ActionBarActivity {
+public class SettingsActivity extends Activity {
 
     public static final String EXTRA_FILTER = "com.panasenko.imagesearch.EXTRA_FILTER";
 
@@ -77,6 +78,5 @@ public class SettingsActivity extends ActionBarActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
-
 
 }

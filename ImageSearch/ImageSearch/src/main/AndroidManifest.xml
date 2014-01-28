@@ -4,9 +4,10 @@
     a:versionCode="1"
     a:versionName="1.0" >
 
-    <uses-sdk
-        a:minSdkVersion="9"
-        a:targetSdkVersion="14" />
+    <uses-sdk a:minSdkVersion="9" a:targetSdkVersion="14" />
+
+    <uses-permission a:name="android.permission.INTERNET" />
+    <uses-permission a:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         a:allowBackup="true"
@@ -14,15 +15,16 @@
         a:label="@string/app_name"
         a:theme="@style/AppTheme" >
         <activity
-            a:name="com.panasenko.imagesearch.SearchActivity"
+            a:name=".activity.SearchActivity"
             a:label="@string/app_name" >
             <intent-filter>
                 <action a:name="android.intent.action.MAIN" />
                 <category a:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity a:name=".SettingsActivity" a:label="@string/app_name" />
-        <service a:name=".SearchImagesIntentService" />
+        <activity a:name=".activity.SettingsActivity" a:label="@string/app_name" />
+        <activity a:name=".activity.ImageActivity" />
+        <service a:name=".service.SearchImagesIntentService" />
     </application>
 
 </manifest>

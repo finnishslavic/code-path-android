@@ -3,7 +3,7 @@
  * Created: 1/24/14
  * Author: Viacheslav Panasenko
  */
-package com.panasenko.imagesearch;
+package com.panasenko.imagesearch.model;
 
 import java.io.Serializable;
 

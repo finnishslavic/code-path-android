@@ -3,10 +3,17 @@
  * Created: 1/25/14
  * Author: Viacheslav Panasenko
  */
-package com.panasenko.imagesearch;
+package com.panasenko.imagesearch.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import com.panasenko.imagesearch.R;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -38,7 +45,8 @@ public class FileWriterUtil {
         }
 
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile, true));
+
             for (String str:strings) {
                 writer.write(str + "\n");
             }
@@ -57,7 +65,7 @@ public class FileWriterUtil {
         List<String> result = new ArrayList<String>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(
-                    ctx.getCacheDir().getAbsoluteFile() + File.pathSeparator + FILE_NAME));
+                    ctx.getCacheDir().getAbsoluteFile() + File.separator + FILE_NAME));
             result = new ArrayList<String>();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -79,6 +87,34 @@ public class FileWriterUtil {
      */
     public static void cleanCache(Context ctx) {
         ctx.getCacheDir().delete();
+    }
+
+    /**
+     * Returns stream uri from given view with ImageView.
+     * @param parent View that has ImageView inside.
+     * @return Uri for the image stream used for sharing.
+     */
+    public static Uri getStreamUri(View parent) {
+        if (parent == null || parent.findViewById(R.id.img_result) == null) {
+            return null;
+        }
+
+        ImageView img = (ImageView) parent.findViewById(R.id.img_result);
+        Bitmap bmp = ((BitmapDrawable) img.getDrawable()).getBitmap();
+        Uri bmpUri = null;
+        try {
+            File file =  new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    "share_image.png");
+            FileOutputStream out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+            bmpUri = Uri.fromFile(file);
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to save file", e);
+        }
+
+        return bmpUri;
     }
 
 }

@@ -3,18 +3,20 @@
  * Created: 1/25/14
  * Author: Viacheslav Panasenko
  */
-package com.panasenko.imagesearch;
+package com.panasenko.imagesearch.service;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import com.github.kevinsawicki.http.HttpRequest;
+import com.panasenko.imagesearch.model.SearchFilter;
+import com.panasenko.imagesearch.util.FileWriterUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,9 +31,12 @@ public class SearchImagesIntentService extends IntentService {
 
     public static final String EXTRA_SEARCH_TERM = "com.panasenko.imagesearch.EXTRA_SEARCH_TERM";
     public static final String EXTRA_ADVANCED_SEARCH = "com.panasenko.imagesearch.EXTRA_ADVANCED_SEARCH";
+    public static final String EXTRA_OFFSET = "com.panasenko.imagesearch.EXTRA_OFFSET";
     public static final String ADVANCED_SETTINGS_FORMAT = "&imgsz=%s&imgcolor=%s&imgtype=%s&as_sitesearch=%s";
 
     public static final String ACTION_SEARCH_FINISHED = "com.panasenko.imagesearch.ACTION_SEARCH_FINISHED";
+
+    private static final int MAX_RESULTS = 8;
 
     /**
      * Default constructor.
@@ -49,7 +54,8 @@ public class SearchImagesIntentService extends IntentService {
             advancedSearch = convertToAdvancedSerachUrl(filter);
         }
 
-        String responseJson = searchImages(searchTerm, advancedSearch);
+        int offset = intent.getIntExtra(EXTRA_OFFSET, 0);
+        String responseJson = searchImages(searchTerm, advancedSearch, offset);
         try {
             List<String> imageUrls = parseImages(responseJson);
             FileWriterUtil.writeStringsToFile(this, imageUrls);
@@ -65,13 +71,15 @@ public class SearchImagesIntentService extends IntentService {
      * @param advancedSettings Advanced search settings.
      * @return String containing JSON response.
      */
-    private String searchImages(String searchTerm, String advancedSettings) {
+    private String searchImages(String searchTerm, String advancedSettings, int offset) {
         if (TextUtils.isEmpty(searchTerm))
         {
             throw new IllegalArgumentException("Search query should not be empty");
         }
 
-        StringBuilder url = new StringBuilder(SEARCH_ENDPOINT + searchTerm);
+        StringBuilder url = new StringBuilder(SEARCH_ENDPOINT + URLEncoder.encode(searchTerm));
+        url.append("&rsz=" + MAX_RESULTS);
+        url.append("&start=" + offset);
         if (!TextUtils.isEmpty(advancedSettings)) {
             url.append(advancedSettings);
         }
@@ -87,7 +95,7 @@ public class SearchImagesIntentService extends IntentService {
 
     private List<String> parseImages(String searchResult) throws JSONException {
         JSONObject responseBody = new JSONObject(searchResult);
-        JSONArray images = responseBody.getJSONArray("results");
+        JSONArray images = responseBody.getJSONObject("responseData").getJSONArray("results");
         List<String> parsedData = new LinkedList<String>();
         for (int i = 0; i < images.length(); i++) {
             JSONObject imageJson = images.getJSONObject(i);

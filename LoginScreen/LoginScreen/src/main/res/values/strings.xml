@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LoginScreen</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_login">Login. Here we go!</string>
+    <string name="email">Email address</string>
+    <string name="password">Password</string>
+    <string name="cancel">Cancel</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">I forgot my password</string>
+
+</resources>

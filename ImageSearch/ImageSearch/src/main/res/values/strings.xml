@@ -13,6 +13,7 @@
     <string name="site_filter">Site Filter</string>
     <string name="site_filter_hint">Input site</string>
     <string name="save">Save</string>
+    <string name="share">Share</string>
 
     <string-array name="image_sizes">
         <item>Small</item>

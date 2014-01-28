@@ -3,5 +3,6 @@
     
     <item a:id="@+id/action_settings"
         a:icon="@drawable/ic_settings"
+        a:title="@string/action_settings"
         app:showAsAction="always" />
 </menu>
