@@ -86,7 +86,8 @@ public class FileWriterUtil {
      * @param ctx Parent context, used to access internal file storage.
      */
     public static void cleanCache(Context ctx) {
-        ctx.getCacheDir().delete();
+        File tmpFile = new File(ctx.getCacheDir(), FILE_NAME);
+        tmpFile.delete();
     }
 
     /**
@@ -100,21 +101,26 @@ public class FileWriterUtil {
         }
 
         ImageView img = (ImageView) parent.findViewById(R.id.img_result);
-        Bitmap bmp = ((BitmapDrawable) img.getDrawable()).getBitmap();
-        Uri bmpUri = null;
-        try {
-            File file =  new File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                    "share_image.png");
-            FileOutputStream out = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.close();
-            bmpUri = Uri.fromFile(file);
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to save file", e);
-        }
+        BitmapDrawable drawable = (BitmapDrawable) img.getDrawable();
+        if (drawable != null) {
+            Bitmap bmp = drawable.getBitmap();
+            Uri bmpUri = null;
+            try {
+                File file =  new File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                        "share_image.png");
+                FileOutputStream out = new FileOutputStream(file);
+                bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+                out.close();
+                bmpUri = Uri.fromFile(file);
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to save file", e);
+            }
 
-        return bmpUri;
+            return bmpUri;
+        } else {
+            return null;
+        }
     }
 
 }

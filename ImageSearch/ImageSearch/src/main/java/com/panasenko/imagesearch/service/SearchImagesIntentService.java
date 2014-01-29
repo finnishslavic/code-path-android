@@ -81,6 +81,7 @@ public class SearchImagesIntentService extends IntentService {
         url.append("&rsz=" + MAX_RESULTS);
         url.append("&start=" + offset);
         if (!TextUtils.isEmpty(advancedSettings)) {
+            Log.d(TAG, "Adavanced search params:" + advancedSettings);
             url.append(advancedSettings);
         }
 
@@ -93,24 +94,41 @@ public class SearchImagesIntentService extends IntentService {
         }
     }
 
+    /**
+     * Parses image URLs from the given JSON string.
+     * @param searchResult JSON string containing image search results.
+     * @return List of URL string to images.
+     * @throws JSONException If parsing error occurs.
+     */
     private List<String> parseImages(String searchResult) throws JSONException {
         JSONObject responseBody = new JSONObject(searchResult);
         JSONArray images = responseBody.getJSONObject("responseData").getJSONArray("results");
         List<String> parsedData = new LinkedList<String>();
         for (int i = 0; i < images.length(); i++) {
             JSONObject imageJson = images.getJSONObject(i);
-            parsedData.add(imageJson.getString("url"));
+            String url = imageJson.getString("url");
+            parsedData.add(url);
+            Log.d(TAG, "Parsed image with URL: " + url);
             // TODO: parse the rest of the data, like 'Title', '
         }
 
         return parsedData;
     }
 
+    /**
+     * Converts filter object into an URL parameters string.
+     * @param filter Image search filter object.
+     * @return String containing key=value parameters to be used in the search request URL.
+     */
     private String convertToAdvancedSerachUrl(SearchFilter filter) {
-        return String.format(ADVANCED_SETTINGS_FORMAT, filter.getImageSize(),
-                filter.getImageColor(), filter.getImageType(), filter.getSiteFilter());
+        return String.format(ADVANCED_SETTINGS_FORMAT, URLEncoder.encode(filter.getImageSize()),
+                URLEncoder.encode(filter.getImageColor()), URLEncoder.encode(filter.getImageType()),
+                URLEncoder.encode(filter.getSiteFilter()));
     }
 
+    /**
+     * Notifies about search completion via broadcast.
+     */
     private void notifyCompletion() {
         Intent searchComplete = new Intent(ACTION_SEARCH_FINISHED);
         sendBroadcast(searchComplete);

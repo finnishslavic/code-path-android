@@ -24,11 +24,17 @@ import com.panasenko.imagesearch.util.FileWriterUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SearchActivity
+ * Search bar and search results for Google Image Search.
+ */
 public class SearchActivity extends Activity {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     private static final int REQUEST_SEARCH_SETTINGS = 100500;
+
+    private static final String EXTRA_SEARCH_INPUT = "com.panasenko.imagesearch.SEARCH_INPUT";
 
     private BroadcastReceiver searchResultReceiver = new BroadcastReceiver() {
         @Override
@@ -41,6 +47,7 @@ public class SearchActivity extends Activity {
     private GridView imagesGrid;
     private ImagesAdapter adapter;
     private SearchFilter filter;
+
     private String lastSearchTerm;
 
     @Override
@@ -62,6 +69,20 @@ public class SearchActivity extends Activity {
         super.onResume();
         registerReceiver(searchResultReceiver,
                 new IntentFilter(SearchImagesIntentService.ACTION_SEARCH_FINISHED));
+        updateSearchResults();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_SEARCH_INPUT, searchInput.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String searchText = savedInstanceState.getString(EXTRA_SEARCH_INPUT);
+        searchInput.setText(searchText);
     }
 
     @Override
@@ -85,7 +106,9 @@ public class SearchActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == REQUEST_SEARCH_SETTINGS) {
-            filter = (SearchFilter) data.getParcelableExtra(SettingsActivity.EXTRA_FILTER);
+            filter = (SearchFilter) data.getSerializableExtra(SettingsActivity.EXTRA_FILTER);
+        } else if (resultCode == RESULT_CANCELED) {
+            filter = null;
         }
     }
 
@@ -168,8 +191,11 @@ public class SearchActivity extends Activity {
      * Updates search results on the grid view.
      */
     private void updateSearchResults() {
-        AsyncReadResultsTask readResultsTask = new AsyncReadResultsTask();
-        readResultsTask.execute();
+        // Update view only if there is an outstanding search
+        if (lastSearchTerm != null && lastSearchTerm.length() > 0) {
+            AsyncReadResultsTask readResultsTask = new AsyncReadResultsTask();
+            readResultsTask.execute();
+        }
     }
 
     /**
@@ -187,8 +213,8 @@ public class SearchActivity extends Activity {
         @Override
         protected void onPostExecute(List<String> strings) {
             if (strings != null && strings.size() > 0) {
-                adapter = new ImagesAdapter(SearchActivity.this, strings);
-                imagesGrid.setAdapter(adapter);
+                adapter.setData(strings);
+                adapter.notifyDataSetChanged();
             }
         }
     }

@@ -79,4 +79,12 @@ public class ImagesAdapter extends BaseAdapter {
                 options);
         return view;
     }
+
+    /**
+     * Sets a data source list for the adapter.
+     * @param data List of strings to be represented by this adapter.
+     */
+    public void setData(List<String> data) {
+        this.data = data;
+    }
 }
