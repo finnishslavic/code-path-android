@@ -1,5 +1,6 @@
 package com.panasenko.twitterclient.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -26,8 +27,9 @@ public class LoginActivity extends OAuthLoginActivity<RestClient> {
 	// i.e Display application "homepage"
     @Override
     public void onLoginSuccess() {
-    	// Intent i = new Intent(this, PhotosActivity.class);
-    	// startActivity(i);
+    	Intent i = new Intent(this, FeedActivity.class);
+    	startActivity(i);
+        finish();
     }
     
     // OAuth authentication flow failed, handle the error

@@ -5,43 +5,129 @@
  */
 package com.panasenko.twitterclient.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 /**
  * Tweet
  * Twitter entry (tweet) model.
  */
-public class Tweet {
+@Table(name = "Tweets")
+public class Tweet extends Model {
 
-    private long id;
-    private String text;
-    private String createdAt;
+    @Column(name = "tweetId", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    String tweetId;
+    @Column(name = "username")
+    String username;
+    @Column(name = "userHandle")
+    String userHandle;
+    @Column(name = "avatar")
+    String avatar;
+    @Column(name = "timestamp")
+    String timestamp;
+    @Column(name = "body")
+    String body;
 
     /**
      * Default constructor.
      */
     public Tweet() {
+        super();
     }
 
-    public long getId() {
-        return id;
+    public Tweet(JSONObject object){
+        super();
+
+        try {
+            tweetId = object.getString("id_str");
+            timestamp = object.getString("created_at");
+            body = object.getString("text");
+
+            JSONObject user = object.getJSONObject("user");
+            username = user.getString("name");
+            userHandle = user.getString("screen_name");
+            avatar = user.getString("profile_image_url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public static ArrayList<Tweet> fromJson(JSONArray jsonArray) {
+        ArrayList<Tweet> tweets = new ArrayList<Tweet>(jsonArray.length());
+
+        for (int i=0; i < jsonArray.length(); i++) {
+            JSONObject tweetJson = null;
+            try {
+                tweetJson = jsonArray.getJSONObject(i);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            Tweet tweet = new Tweet(tweetJson);
+            tweet.save();
+            tweets.add(tweet);
+        }
+
+        return tweets;
     }
 
-    public String getText() {
-        return text;
+    public String getUsername() {
+        return username;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getTweetId() {
+        return tweetId;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setTweetId(String tweetId) {
+        this.tweetId = tweetId;
+    }
+
+    public String getUserHandle() {
+        return userHandle;
+    }
+
+    public void setUserHandle(String userHandle) {
+        this.userHandle = userHandle;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    @Override
+    public String toString() {
+        return body;
     }
 }

@@ -26,9 +26,9 @@ public class RestClient extends OAuthBaseClient {
 
     public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
     public static final String REST_URL = "http://api.twitter.com";
-    public static final String REST_CONSUMER_KEY = "B9wdKp6pZTlg1HFMHXDESA";
-    public static final String REST_CONSUMER_SECRET = "MBqgdwo7ThygEK4x8bCAoPpNvolpYpu9TKcEV4sl2s";
-    public static final String REST_CALLBACK_URL = "oauth://panasenkotweets"; // Change this (here and in manifest)
+    public static final String REST_CONSUMER_KEY = "GQRp7Vid7R2XRPK42wHtQ";
+    public static final String REST_CONSUMER_SECRET = "mLCbTAyuMmFMg5ShDOEeT73b3E97H3uyZUDinBg8";
+    public static final String REST_CALLBACK_URL = "oauth://panasenkotweets";
     
     public RestClient(Context context) {
         super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
@@ -48,6 +48,5 @@ public class RestClient extends OAuthBaseClient {
         params.put("status", body);
         getClient().post(apiUrl, params, handler);
     }
-
 
 }

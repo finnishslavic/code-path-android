@@ -26,6 +26,7 @@ dependencies {
 	compile 'com.android.support:appcompat-v7:+'
     compile 'com.squareup.picasso:picasso:2.2.0'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
-    compile files('android-async-http-1.4.3.jar', 'codepath-oauth-0.3.0.jar', 'codepath-utils.jar',
-        'scribe-codepath.jar', 'ActiveAndroid-3.1-adcddac4c58.jar')
+    compile files('libs/android-async-http-1.4.3.jar', 'libs/codepath-oauth-0.3.0.jar',
+            'libs/codepath-utils.jar', 'libs/scribe-codepath.jar',
+            'libs/ActiveAndroid-3.1-adcddac4c58.jar')
 }

@@ -7,5 +7,8 @@
     <string name="user_name_placeholder">Twitterist</string>
     <string name="user_handle_placeholder">"@twt_st"</string>
     <string name="login_label">Log In</string>
+    <string name="text_placeholder">Some sort of a text for this twitter entry</string>
+    <string name="timestamp_placeholder">(4 hours ago)</string>
+    <string name="action_compose">Compose</string>
 
 </resources>
