@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.8.1'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 14
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 14
+    }
+}
+
+dependencies {
+	compile 'com.android.support:appcompat-v7:+'
+    compile 'com.squareup.picasso:picasso:2.2.0'
+    compile 'com.squareup.retrofit:retrofit:1.4.1'
+    compile files('android-async-http-1.4.3.jar', 'codepath-oauth-0.3.0.jar', 'codepath-utils.jar',
+        'scribe-codepath.jar', 'ActiveAndroid-3.1-adcddac4c58.jar')
+}

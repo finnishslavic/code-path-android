@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:layout_width="match_parent"
+    a:layout_height="wrap_content">
+    <ImageView a:id="@+id/iv_avatar"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_alignParentLeft="true"
+        a:layout_alignParentTop="true"
+        a:src="@drawable/img_avatar_placeholder" />
+    <TextView a:id="@+id/tv_user_name"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_alignParentTop="true"
+        a:layout_toRightOf="@id/iv_avatar"
+        a:text="@string/user_name_placeholder" />
+    <TextView a:id="@+id/tv_user_handle"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_alignParentTop="true"
+        a:layout_toRightOf="@id/tv_user_name"
+        a:text="@string/user_handle_placeholder" />
+    <TextView a:id="@+id/tv_tweet"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_toRightOf="@id/iv_avatar"
+        a:layout_below="@id/tv_user_name"
+        a:text="@string/user_handle_placeholder" />
+</RelativeLayout>

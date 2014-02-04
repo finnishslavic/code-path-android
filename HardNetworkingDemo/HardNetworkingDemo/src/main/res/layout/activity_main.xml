@@ -1,0 +1,10 @@
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:id="@+id/container"
+    a:orientation="vertical"
+    a:layout_width="match_parent"
+    a:layout_height="match_parent">
+    <ImageView a:id="@+id/iv_basic_image"
+        a:layout_width="match_parent"
+        a:layout_height="match_parent" />
+
+</LinearLayout>
