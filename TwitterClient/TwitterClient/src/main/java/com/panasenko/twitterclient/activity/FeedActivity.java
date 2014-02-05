@@ -49,7 +49,6 @@ public class FeedActivity extends Activity {
         setContentView(R.layout.feed_activity);
 
         initViews();
-//        loadTweets();
     }
 
     @Override
@@ -101,8 +100,8 @@ public class FeedActivity extends Activity {
                     return;
                 }
 
-//                loadTweets(page);
-                loadTweetsFromFile();
+                loadTweets(page);
+//                loadTweetsFromFile();
             }
         });
 
@@ -156,8 +155,8 @@ public class FeedActivity extends Activity {
         timelineAdapter = new TimelineAdapter(this, feedData);
         timelineList.setAdapter(timelineAdapter);
 
-//        loadTweets(0);
-        loadTweetsFromFile();
+        loadTweets(1);
+//        loadTweetsFromFile();
     }
 
     /**

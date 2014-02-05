@@ -72,6 +72,7 @@ public class ComposeTweetActivity extends Activity {
                 Log.e("ComposeTweetActivity", "Error occurred");
                 finish();
             }
+
         });
     }
 
