@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/Users/viacheslav/Development/android/projects/home/code-path-android/TwitterClient/PullToRefresh/src/main/assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/viacheslav/Development/android/projects/home/code-path-android/TwitterClient/PullToRefresh/src/debug/assets" />
+    </dataSet>
+
+</merger>

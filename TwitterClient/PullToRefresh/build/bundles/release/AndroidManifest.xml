@@ -1,0 +1,4 @@
+<!-- From: file:/Users/viacheslav/Development/android/projects/home/code-path-android/TwitterClient/PullToRefresh/src/main/AndroidManifest.xml --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="4" android:versionName="1.3.0" package="eu.erikw">
+    
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="14"/>
+</manifest>

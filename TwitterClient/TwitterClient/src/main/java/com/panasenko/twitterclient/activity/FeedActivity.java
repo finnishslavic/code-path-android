@@ -8,7 +8,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.panasenko.twitterclient.R;
 import com.panasenko.twitterclient.TwitterClientApp;
@@ -16,6 +15,7 @@ import com.panasenko.twitterclient.adapter.EndlessScrollListener;
 import com.panasenko.twitterclient.adapter.TimelineAdapter;
 import com.panasenko.twitterclient.model.Tweet;
 import com.panasenko.twitterclient.service.RestClient;
+import eu.erikw.PullToRefreshListView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,11 +35,13 @@ import java.util.List;
 public class FeedActivity extends Activity {
 
     private static final int REQUEST_COMPOSE_TWEET = 100500;
-    private static final int TWEET_GRANULARITY = 25;
+    private static final int MAX_TWEET_PER_PAGE = 20;
 
-    private ListView timelineList;
+    private PullToRefreshListView timelineList;
     private List<Tweet> feedData;
     private TimelineAdapter timelineAdapter;
+
+    private int lastLoadedPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,6 @@ public class FeedActivity extends Activity {
 
         initViews();
 //        loadTweets();
-        loadTweetsFromFile();
     }
 
     @Override
@@ -93,12 +93,23 @@ public class FeedActivity extends Activity {
      * Initializes views.
      */
     private void initViews() {
-        timelineList = (ListView) findViewById(android.R.id.list);
+        timelineList = (PullToRefreshListView) findViewById(android.R.id.list);
         timelineList.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+                if (totalItemsCount < MAX_TWEET_PER_PAGE) {
+                    return;
+                }
+
 //                loadTweets(page);
                 loadTweetsFromFile();
+            }
+        });
+
+        timelineList.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshTimeline();
             }
         });
 
@@ -141,9 +152,12 @@ public class FeedActivity extends Activity {
      * Refreshes timeline by reiniting data set.
      */
     private void refreshTimeline() {
-        feedData = new ArrayList<Tweet>(TWEET_GRANULARITY);
+        feedData = new ArrayList<Tweet>(MAX_TWEET_PER_PAGE);
         timelineAdapter = new TimelineAdapter(this, feedData);
         timelineList.setAdapter(timelineAdapter);
+
+//        loadTweets(0);
+        loadTweetsFromFile();
     }
 
     /**
@@ -154,7 +168,7 @@ public class FeedActivity extends Activity {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                List<Tweet> tweets = new ArrayList<Tweet>(TWEET_GRANULARITY);
+                List<Tweet> tweets;
                 try {
                     StringBuilder buf = new StringBuilder();
                     InputStream json = getAssets().open("tweet.json");
@@ -183,6 +197,7 @@ public class FeedActivity extends Activity {
             @Override
             protected void onPostExecute(Void result) {
                 timelineAdapter.notifyDataSetChanged();
+                timelineList.onRefreshComplete();
             }
         }.execute();
     }
@@ -207,6 +222,7 @@ public class FeedActivity extends Activity {
         @Override
         protected void onPostExecute(Void aVoid) {
             timelineAdapter.notifyDataSetChanged();
+            timelineList.onRefreshComplete();
         }
     }
 
