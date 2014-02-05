@@ -7,7 +7,6 @@ package com.panasenko.twitterclient.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import android.text.SpannableString;
 import android.text.format.DateUtils;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import com.panasenko.twitterclient.model.Tweet;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -83,7 +81,7 @@ public class TimelineAdapter extends BaseAdapter {
         Picasso.with(context).load(Uri.parse(twt.getAvatar())).into(holder.avatar);
 
         try {
-            long timestamp = convertToMillis(twt.getTimestamp());
+            long timestamp = twt.getTimestampMillis();
             CharSequence relativeTime = DateUtils.getRelativeTimeSpanString(timestamp,
                     System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
             holder.timestamp.setText(relativeTime);
@@ -95,12 +93,7 @@ public class TimelineAdapter extends BaseAdapter {
         return view;
     }
 
-    private long convertToMillis(String twitterTimestamp) throws ParseException {
-        final String TWITTER = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-        SimpleDateFormat sf = new SimpleDateFormat(TWITTER);
-        sf.setLenient(true);
-        return sf.parse(twitterTimestamp).getTime();
-    }
+
 
     /**
      * ViewHolder

@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
-    a:orientation="vertical"
+<RelativeLayout xmlns:a="http://schemas.android.com/apk/res/android"
+    a:padding="16dp"
     a:layout_width="match_parent"
     a:layout_height="match_parent">
-
-</LinearLayout>
+    <TextView a:id="@+id/tv_char_counter"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_alignParentTop="true"
+        a:layout_alignParentRight="true"
+        a:textColor="@android:color/darker_gray"
+        a:textSize="12sp"
+        a:text="@string/tweet_max_length" />
+    <EditText a:id="@+id/et_tweet_input"
+        a:layout_width="match_parent"
+        a:layout_height="wrap_content"
+        a:layout_below="@id/tv_char_counter"
+        a:singleLine="false"
+        a:minLines="3"
+        a:hint="@string/tweet_hint" />
+    <Button a:id="@+id/btn_tweet"
+        a:layout_width="wrap_content"
+        a:layout_height="wrap_content"
+        a:layout_below="@id/et_tweet_input"
+        a:layout_centerHorizontal="true"
+        a:layout_margin="8dp"
+        a:padding="16dp"
+        a:onClick="onTweetClicked"
+        a:enabled="false"
+        a:text="@string/btn_tweet"/>
+</RelativeLayout>

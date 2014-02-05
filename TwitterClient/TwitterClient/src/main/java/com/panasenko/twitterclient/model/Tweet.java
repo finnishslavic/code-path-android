@@ -12,14 +12,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Tweet
  * Twitter entry (tweet) model.
  */
 @Table(name = "Tweets")
-public class Tweet extends Model {
+public class Tweet extends Model implements Serializable {
+
+    private static final long serialVersionUID = 402320935823454514L;
 
     @Column(name = "tweetId", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     String tweetId;
@@ -129,5 +135,35 @@ public class Tweet extends Model {
     @Override
     public String toString() {
         return body;
+    }
+
+    /**
+     * Converts timestamp to milliseconds.
+     * @return
+     * @throws ParseException
+     */
+    public long getTimestampMillis() throws ParseException {
+        final String TWITTER = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(TWITTER);
+        sf.setLenient(true);
+        return sf.parse(timestamp).getTime();
+    }
+
+    /**
+     * TweetTimestampComparator
+     * Compares tweeter objects based on their creation dates.
+     */
+    public static class TweetTimestampComparator implements Comparator<Tweet> {
+
+        @Override
+        public int compare(Tweet tweet, Tweet tweet2) {
+            try {
+                return (int) (tweet2.getTimestampMillis() - tweet.getTimestampMillis());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return 0;
+        }
     }
 }

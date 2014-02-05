@@ -10,5 +10,9 @@
     <string name="text_placeholder">Some sort of a text for this twitter entry</string>
     <string name="timestamp_placeholder">(4 hours ago)</string>
     <string name="action_compose">Compose</string>
+    <string name="tweet_hint">What\'s happening?</string>
+    <string name="tweet_max_length">140</string>
+    <string name="btn_tweet">Tweet!</string>
+    <string name="action_refresh">Refresh</string>
 
 </resources>

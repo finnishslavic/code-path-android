@@ -1,17 +1,18 @@
 package com.panasenko.twitterclient.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.panasenko.twitterclient.R;
 import com.panasenko.twitterclient.TwitterClientApp;
+import com.panasenko.twitterclient.adapter.EndlessScrollListener;
 import com.panasenko.twitterclient.adapter.TimelineAdapter;
 import com.panasenko.twitterclient.model.Tweet;
 import com.panasenko.twitterclient.service.RestClient;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,8 +35,12 @@ import java.util.List;
  */
 public class FeedActivity extends Activity {
 
-    private ListView feedList;
+    private static final int REQUEST_COMPOSE_TWEET = 100500;
+    private static final int TWEET_GRANULARITY = 25;
+
+    private ListView timelineList;
     private List<Tweet> feedData;
+    private TimelineAdapter timelineAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,23 +65,56 @@ public class FeedActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_compose:
+                Intent compose = new Intent(this, ComposeTweetActivity.class);
+                startActivityForResult(compose, REQUEST_COMPOSE_TWEET);
                 return true;
+            case R.id.action_refresh:
+                refreshTimeline();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_COMPOSE_TWEET && resultCode == RESULT_OK) {
+            Tweet twt = (Tweet) data.getSerializableExtra(ComposeTweetActivity.EXTRA_TWEET);
+
+            if (feedData != null && timelineAdapter != null) {
+                feedData.add(0, twt);
+                timelineAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    /**
+     * Initializes views.
+     */
     private void initViews() {
-        feedList = (ListView) findViewById(android.R.id.list);
+        timelineList = (ListView) findViewById(android.R.id.list);
+        timelineList.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+//                loadTweets(page);
+                loadTweetsFromFile();
+            }
+        });
+
+        refreshTimeline();
     }
 
-    private void loadTweets() {
+    /**
+     * Loads tweets from the Internet.
+     * @param page Page to be used for loading more tweets.
+     */
+    private void loadTweets(int page) {
         RestClient client = TwitterClientApp.getRestClient();
-        client.getHomeTimeline(1, new JsonHttpResponseHandler() {
+        client.getHomeTimeline(page, new JsonHttpResponseHandler() {
             public void onSuccess(JSONArray json) {
-                ArrayList<Tweet> tweets = Tweet.fromJson(json);
-                TimelineAdapter adapter = new TimelineAdapter(FeedActivity.this, tweets);
-                feedList.setAdapter(adapter);
+                // Parse and save data in background
+                new AsyncParseAndUpdateTweets().execute(json);
             }
 
             @Override
@@ -97,12 +137,24 @@ public class FeedActivity extends Activity {
         });
     }
 
+    /**
+     * Refreshes timeline by reiniting data set.
+     */
+    private void refreshTimeline() {
+        feedData = new ArrayList<Tweet>(TWEET_GRANULARITY);
+        timelineAdapter = new TimelineAdapter(this, feedData);
+        timelineList.setAdapter(timelineAdapter);
+    }
+
+    /**
+     * Loads tweets from file.
+     */
     private void loadTweetsFromFile() {
-        new AsyncTask<Void, Void, List<Tweet>>() {
+        new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected List<Tweet> doInBackground(Void... voids) {
-                List<Tweet> tweets = new ArrayList<Tweet>(25);
+            protected Void doInBackground(Void... voids) {
+                List<Tweet> tweets = new ArrayList<Tweet>(TWEET_GRANULARITY);
                 try {
                     StringBuilder buf = new StringBuilder();
                     InputStream json = getAssets().open("tweet.json");
@@ -117,23 +169,45 @@ public class FeedActivity extends Activity {
 
                     JSONArray array = new JSONArray(buf.toString());
                     tweets = Tweet.fromJson(array);
+                    feedData.addAll(tweets);
+                    Collections.sort(feedData, new Tweet.TweetTimestampComparator());
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                return tweets;
+                return null;
             }
 
             @Override
-            protected void onPostExecute(List<Tweet> tweets) {
-//                ArrayAdapter<Tweet> adapter = new ArrayAdapter<Tweet>(FeedActivity.this,
-//                        android.R.layout.simple_list_item_1, tweets);
-                TimelineAdapter adapter = new TimelineAdapter(FeedActivity.this, tweets);
-                feedList.setAdapter(adapter);
+            protected void onPostExecute(Void result) {
+                timelineAdapter.notifyDataSetChanged();
             }
         }.execute();
+    }
+
+    /**
+     * AsyncParseAndUpdateTweets
+     * Async task that parses tweets from JSON and updates them in the list.
+     */
+    private class AsyncParseAndUpdateTweets extends AsyncTask<JSONArray, Void, Void> {
+
+        @Override
+        protected Void doInBackground(JSONArray... jsonArrays) {
+            if (jsonArrays == null || jsonArrays.length < 1) {
+                throw new IllegalArgumentException("JSONArray for parsing is empty");
+            }
+
+            feedData.addAll(Tweet.fromJson(jsonArrays[0]));
+            Collections.sort(feedData, new Tweet.TweetTimestampComparator());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            timelineAdapter.notifyDataSetChanged();
+        }
     }
 
 }
